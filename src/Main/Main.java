@@ -16,86 +16,130 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
-import java.awt.image.DataBufferInt;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
 import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 
+import JObjects.Botao;
+import JObjects.CampoDeTexto;
 import Menu.Menu;
 
-public class Main extends Canvas implements Runnable,KeyListener,MouseListener,MouseMotionListener{
-	public static int TILE_SIZE=64;
+public class Main extends Canvas implements Runnable, MouseMotionListener, MouseListener, KeyListener {
+	public static int TILE_SIZE = 64;
 	private static final long serialVersionUID = 1L;
 	public static JFrame frame;
 	private Thread thread;
+	public static List <Botao> botoes= new ArrayList<Botao>();
+	public static List <CampoDeTexto> campos= new ArrayList<CampoDeTexto>();
 	private boolean isRunning = true;
-	public static final int WIDTH = 180*4;
-	public static final int HEIGHT = 90*4;
-	public static final int SCALE = 2;
+	public static final int WIDTH = 180 * 4;
+	public static final int HEIGHT = 90 * 4;
+	public static final int SCALE = 1;
 	private BufferedImage image;
 	public static Random rand;
-	
+	private boolean mouseOverButton;
+	private boolean mouseOverText;
 	public static String gameState = "MENU";
 	public static Menu menu;
-	
-	public Main(){
-//		requestFocus();
-		rand = new Random();
+	private boolean caps;
+
+	public Main() {
 		addKeyListener(this);
 		addMouseListener(this);
 		addMouseMotionListener(this);
-		setPreferredSize(new Dimension(WIDTH*SCALE,HEIGHT*SCALE));
+//		requestFocus();
+		rand = new Random();
+		setPreferredSize(new Dimension(WIDTH * SCALE, HEIGHT * SCALE));
 		initFrame();
-		//Inicializando objetos.
-		image = new BufferedImage(WIDTH,HEIGHT,BufferedImage.TYPE_INT_RGB);
+		// Inicializando objetos.
+		image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
 		menu = new Menu();
 	}
-	
-	public void initFrame(){
-		frame = new JFrame("Dragon Soul I");
+	public void attMouse() {
+		int bot=botoes.size();
+		int camp=campos.size();
+		for(int i=0;i<botoes.size();i++) {
+			if(botoes.get(i).mouseOver()) {
+				bot--;
+			}
+		}
+		for(int j=0;j<campos.size();j++) {
+			if(campos.get(j).mouseOver()) {
+				camp--;
+			}
+		}
+		if(bot==botoes.size()) {
+			if(camp==campos.size()) {
+				try {
+					Toolkit toolkit = Toolkit.getDefaultToolkit();
+					Image image = toolkit.getImage(getClass().getResource("/cursorStandart.png"));
+					Cursor c = toolkit.createCustomCursor(image, new Point(0, 0), "img");
+					frame.setCursor(c);
+				} catch (Exception e) {
+
+				}
+			}else {
+				try {
+					Toolkit toolkit = Toolkit.getDefaultToolkit();
+					Image image = toolkit.getImage(getClass().getResource("/cursorBar.png"));
+					Cursor c = toolkit.createCustomCursor(image, new Point(0, 0), "img");
+					frame.setCursor(c);
+				} catch (Exception e) {
+
+				}
+			}
+		}else {
+			try {
+				Toolkit toolkit = Toolkit.getDefaultToolkit();
+				Image image = toolkit.getImage(getClass().getResource("/cursorHand.png"));
+				Cursor c = toolkit.createCustomCursor(image, new Point(0, 0), "img");
+				frame.setCursor(c);
+			} catch (Exception e) {
+
+			}
+		}
+		
+		
+	}
+	public void initFrame() {
+		frame = new JFrame("Gerenciador");
 		frame.add(this);
 		frame.setResizable(false);
 		frame.pack();
-		Image imagem=null;
+		Image imagem = null;
 		try {
-			LocalDate myObj = LocalDate.now(); 
-			String data= String.valueOf(myObj);
-			String mes= data.substring(5, 7);
-			String dia= data.substring(8, 10);
-//			imagem=ImageIO.read(getClass().getResource("/icone-jogo/icon.png"));
-			if(mes.equals("12") && dia.equals("25")) {
-				imagem=ImageIO.read(getClass().getResource("/icone-jogo/iconNatalino.png"));
-			}else {
-				imagem=ImageIO.read(getClass().getResource("/icone-jogo/icon.png"));
-			}
-			
-		}catch (IOException e) {
-			e.printStackTrace();
+			imagem = ImageIO.read(getClass().getResource("/icone-jogo/icon.png"));
+		} catch (IOException e) {
+
 		}
-		Toolkit toolkit =Toolkit.getDefaultToolkit();
-		Image image= toolkit.getImage(getClass().getResource("/icone-jogo/icon.png"));
-		Cursor c= toolkit.createCustomCursor(image, new Point(0,0), "img");
-		
+		try {
+			Toolkit toolkit = Toolkit.getDefaultToolkit();
+			Image image = toolkit.getImage(getClass().getResource("/cursorStandart.png"));
+			Cursor c = toolkit.createCustomCursor(image, new Point(0, 0), "img");
+			frame.setCursor(c);
+		} catch (Exception e) {
+
+		}
+
 		frame.setIconImage(imagem);
 //		frame.setAlwaysOnTop(true);
 		frame.setLocationRelativeTo(null);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setVisible(true);
 	}
-	
-	public synchronized void start(){
+
+	public synchronized void start() {
 		thread = new Thread(this);
 		isRunning = true;
 		thread.start();
 	}
-	
-	public synchronized void stop(){
+
+	public synchronized void stop() {
 		isRunning = false;
 		try {
 			thread.join();
@@ -103,117 +147,418 @@ public class Main extends Canvas implements Runnable,KeyListener,MouseListener,M
 			e.printStackTrace();
 		}
 	}
-	
-	public static void main(String args[]){
+
+	public static void main(String args[]) {
 		Main game = new Main();
 		game.start();
 	}
-	
-	public void tick(){
+
+	public void tick() {
 		menu.tick();
+		attMouse();
 	}
-	public void render(){
+
+	public void render() {
 		BufferStrategy bs = this.getBufferStrategy();
-		if(bs == null){
+		if (bs == null) {
 			this.createBufferStrategy(3);
 			return;
 		}
 		Graphics g = image.getGraphics();
-		g.setColor(new Color(0,0,0));
-		g.fillRect(0, 0,WIDTH,HEIGHT);
+		g.setColor(new Color(0, 0, 0));
+		g.fillRect(0, 0, WIDTH, HEIGHT);
 		menu.render(g);
 		g.dispose();
 		g = bs.getDrawGraphics();
-		g.drawImage(image, 0, 0,WIDTH*SCALE,HEIGHT*SCALE,null);
-		g.setFont(new Font("arial",Font.BOLD,20));
+		g.drawImage(image, 0, 0, WIDTH * SCALE, HEIGHT * SCALE, null);
+		g.setFont(new Font("arial", Font.BOLD, 20));
 		bs.show();
 	}
-	
-public void run() {
+
+	public void run() {
 		long lastTime = System.nanoTime();
 		double amongOfTicks = 60.0;
 		double delta = 0;
 		double ns = 1000000000 / amongOfTicks;
 		int frames = 0;
 		double timer = System.currentTimeMillis();
-		while(isRunning) {
-			
+		while (isRunning) {
+
 			long now = System.nanoTime();
-			delta+= (now-lastTime)/ns;
-			lastTime= now;
-			if(delta>=1) {
+			delta += (now - lastTime) / ns;
+			lastTime = now;
+			if (delta >= 1) {
 				tick();
 				render();
 				frames++;
-				delta--;				
+				delta--;
 			}
-			if(System.currentTimeMillis() - timer >= 1000) {
-				System.out.println("FPS:"+ frames);
-				frames=0;
-				timer+=1000;
+			if (System.currentTimeMillis() - timer >= 1000) {
+				System.out.println("FPS:" + frames);
+				frames = 0;
+				timer += 1000;
 			}
 		}
-		
+
 		stop();
 	}
 
 	@Override
 	public void keyPressed(KeyEvent e) {
-		if(e.getKeyCode() == KeyEvent.VK_X){
+		if (e.getKeyCode() == KeyEvent.VK_BACK_SPACE) {
+			for(int j=0;j<campos.size();j++) {
+				if(campos.get(j).clicou()) {
+					campos.get(j).removeLetra();
+				}
+			}
 		}
-		if(e.getKeyCode() == KeyEvent.VK_P){
-		
+		if (e.getKeyCode() == KeyEvent.VK_CAPS_LOCK) {
+			caps=!caps;
+		}
+		if (e.getKeyCode() == KeyEvent.VK_TAB) {
+			int i=99;
+			for(int j=0;j<campos.size();j++) {
+				if(campos.get(j).clicou()) {
+					i=j;
+				}
+			}
+			System.out.println(i);
+			if(i==campos.size()-1) {
+				campos.get(i).desclicar();
+				campos.get(0).clicar();
+				i=99;
+			}else {
+				campos.get(i).desclicar();
+				campos.get(i+1).clicar();
+				i=99;
+			}
+		}
+		if (e.getKeyCode() == KeyEvent.VK_A) {
+			for(int j=0;j<campos.size();j++) {
+				if(campos.get(j).clicou()) {
+					if(caps) {
+						campos.get(j).addLetra("A");
+					}else {
+						campos.get(j).addLetra("a");
+					}
+				}
+			}
+		}
+		if (e.getKeyCode() == KeyEvent.VK_B) {
+			for(int j=0;j<campos.size();j++) {
+				if(campos.get(j).clicou()) {
+					if(caps) {
+						campos.get(j).addLetra("B");
+					}else {
+						campos.get(j).addLetra("b");
+					}
+				}
+			}
+		}
+		if (e.getKeyCode() == KeyEvent.VK_C) {
+			for(int j=0;j<campos.size();j++) {
+				if(campos.get(j).clicou()) {
+					if(caps) {
+						campos.get(j).addLetra("C");
+					}else {
+						campos.get(j).addLetra("c");
+					}
+				}
+			}
+		}
+		if (e.getKeyCode() == KeyEvent.VK_D) {
+			for(int j=0;j<campos.size();j++) {
+				if(campos.get(j).clicou()) {
+					if(caps) {
+						campos.get(j).addLetra("D");
+					}else {
+						campos.get(j).addLetra("d");
+					}
+				}
+			}
+		}
+		if (e.getKeyCode() == KeyEvent.VK_E) {
+			for(int j=0;j<campos.size();j++) {
+				if(campos.get(j).clicou()) {
+					if(caps) {
+						campos.get(j).addLetra("E");
+					}else {
+						campos.get(j).addLetra("e");
+					}
+				}
+			}
+		}
+		if (e.getKeyCode() == KeyEvent.VK_F) {
+			for(int j=0;j<campos.size();j++) {
+				if(campos.get(j).clicou()) {
+					if(caps) {
+						campos.get(j).addLetra("F");
+					}else {
+						campos.get(j).addLetra("f");
+					}
+				}
+			}
+		}
+		if (e.getKeyCode() == KeyEvent.VK_G) {
+			for(int j=0;j<campos.size();j++) {
+				if(campos.get(j).clicou()) {
+					if(caps) {
+						campos.get(j).addLetra("G");
+					}else {
+						campos.get(j).addLetra("g");
+					}
+				}
+			}
+		}
+		if (e.getKeyCode() == KeyEvent.VK_H) {
+			for(int j=0;j<campos.size();j++) {
+				if(campos.get(j).clicou()) {
+					if(caps) {
+						campos.get(j).addLetra("H");
+					}else {
+						campos.get(j).addLetra("h");
+					}
+				}
+			}
+		}
+		if (e.getKeyCode() == KeyEvent.VK_I) {
+			for(int j=0;j<campos.size();j++) {
+				if(campos.get(j).clicou()) {
+					if(caps) {
+						campos.get(j).addLetra("I");
+					}else {
+						campos.get(j).addLetra("i");
+					}
+				}
+			}
+		}
+		if (e.getKeyCode() == KeyEvent.VK_J) {
+			for(int j=0;j<campos.size();j++) {
+				if(campos.get(j).clicou()) {
+					if(caps) {
+						campos.get(j).addLetra("J");
+					}else {
+						campos.get(j).addLetra("j");
+					}
+				}
+			}
+		}
+		if (e.getKeyCode() == KeyEvent.VK_K) {
+			for(int j=0;j<campos.size();j++) {
+				if(campos.get(j).clicou()) {
+					if(caps) {
+						campos.get(j).addLetra("K");
+					}else {
+						campos.get(j).addLetra("k");
+					}
+				}
+			}
+		}
+		if (e.getKeyCode() == KeyEvent.VK_L) {
+			for(int j=0;j<campos.size();j++) {
+				if(campos.get(j).clicou()) {
+					if(caps) {
+						campos.get(j).addLetra("L");
+					}else {
+						campos.get(j).addLetra("l");
+					}
+				}
+			}
+		}
+		if (e.getKeyCode() == KeyEvent.VK_M) {
+			for(int j=0;j<campos.size();j++) {
+				if(campos.get(j).clicou()) {
+					if(caps) {
+						campos.get(j).addLetra("M");
+					}else {
+						campos.get(j).addLetra("m");
+					}
+				}
+			}
+		}
+		if (e.getKeyCode() == KeyEvent.VK_N) {
+			for(int j=0;j<campos.size();j++) {
+				if(campos.get(j).clicou()) {
+					if(caps) {
+						campos.get(j).addLetra("N");
+					}else {
+						campos.get(j).addLetra("n");
+					}
+				}
+			}
+		}
+		if (e.getKeyCode() == KeyEvent.VK_O) {
+			for(int j=0;j<campos.size();j++) {
+				if(campos.get(j).clicou()) {
+					if(caps) {
+						campos.get(j).addLetra("O");
+					}else {
+						campos.get(j).addLetra("o");
+					}
+				}
+			}
+		}
+		if (e.getKeyCode() == KeyEvent.VK_P) {
+			for(int j=0;j<campos.size();j++) {
+				if(campos.get(j).clicou()) {
+					if(caps) {
+						campos.get(j).addLetra("P");
+					}else {
+						campos.get(j).addLetra("p");
+					}
+				}
+			}
+		}
+		if (e.getKeyCode() == KeyEvent.VK_Q) {
+			for(int j=0;j<campos.size();j++) {
+				if(campos.get(j).clicou()) {
+					if(caps) {
+						campos.get(j).addLetra("Q");
+					}else {
+						campos.get(j).addLetra("q");
+					}
+				}
+			}
+		}
+		if (e.getKeyCode() == KeyEvent.VK_R) {
+			for(int j=0;j<campos.size();j++) {
+				if(campos.get(j).clicou()) {
+					if(caps) {
+						campos.get(j).addLetra("R");
+					}else {
+						campos.get(j).addLetra("r");
+					}
+				}
+			}
+		}
+		if (e.getKeyCode() == KeyEvent.VK_S) {
+			for(int j=0;j<campos.size();j++) {
+				if(campos.get(j).clicou()) {
+					if(caps) {
+						campos.get(j).addLetra("S");
+					}else {
+						campos.get(j).addLetra("s");
+					}
+				}
+			}
+		}
+		if (e.getKeyCode() == KeyEvent.VK_T) {
+			for(int j=0;j<campos.size();j++) {
+				if(campos.get(j).clicou()) {
+					if(caps) {
+						campos.get(j).addLetra("T");
+					}else {
+						campos.get(j).addLetra("t");
+					}
+				}
+			}
+		}
+		if (e.getKeyCode() == KeyEvent.VK_U) {
+			for(int j=0;j<campos.size();j++) {
+				if(campos.get(j).clicou()) {
+					if(caps) {
+						campos.get(j).addLetra("U");
+					}else {
+						campos.get(j).addLetra("u");
+					}
+				}
+			}
+		}
+		if (e.getKeyCode() == KeyEvent.VK_V) {
+			for(int j=0;j<campos.size();j++) {
+				if(campos.get(j).clicou()) {
+					if(caps) {
+						campos.get(j).addLetra("V");
+					}else {
+						campos.get(j).addLetra("v");
+					}
+				}
+			}
+		}
+		if (e.getKeyCode() == KeyEvent.VK_X) {
+			for(int j=0;j<campos.size();j++) {
+				if(campos.get(j).clicou()) {
+					if(caps) {
+						campos.get(j).addLetra("X");
+					}else {
+						campos.get(j).addLetra("x");
+					}
+				}
+			}
+		}
+		if (e.getKeyCode() == KeyEvent.VK_Y) {
+			for(int j=0;j<campos.size();j++) {
+				if(campos.get(j).clicou()) {
+					if(caps) {
+						campos.get(j).addLetra("Y");
+					}else {
+						campos.get(j).addLetra("y");
+					}
+				}
+			}
+		}
+		if (e.getKeyCode() == KeyEvent.VK_W) {
+			for(int j=0;j<campos.size();j++) {
+				if(campos.get(j).clicou()) {
+					if(caps) {
+						campos.get(j).addLetra("W");
+					}else {
+						campos.get(j).addLetra("w");
+					}
+				}
+			}
+		}
+		if (e.getKeyCode() == KeyEvent.VK_Z) {
+			for(int j=0;j<campos.size();j++) {
+				if(campos.get(j).clicou()) {
+					if(caps) {
+						campos.get(j).addLetra("Z");
+					}else {
+						campos.get(j).addLetra("z");
+					}
+				}
+			}
 		}
 	}
 
 	@Override
 	public void keyReleased(KeyEvent e) {
-	
+
 	}
 
 	@Override
 	public void keyTyped(KeyEvent e) {
-		
+
 	}
+	
+	
+	
+	@Override
+	public void mouseClicked(MouseEvent e) {}
 
 	@Override
-	public void mouseClicked(MouseEvent e) {
-		
-	}
-
-	@Override
-	public void mouseEntered(MouseEvent e) {
-		
-	}
+	public void mouseEntered(MouseEvent e) {}
 	@Override
 	public void mouseMoved(MouseEvent e) {
-		menu.mx=e.getX()/2;
-		menu.my=e.getY()/2;
+		menu.setMouse(e.getX(),e.getY());
+		menu.mover();
 	}
 	@Override
-	public void mouseExited(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-		
-	}
+	public void mouseExited(MouseEvent e) {}
 
 	@Override
 	public void mousePressed(MouseEvent e) {
-		menu.clicou=true;
+		menu.pressionar();
 	}
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
-		menu.mx=e.getX()/2;
-		menu.my=e.getY()/2;
-		menu.clicou=false;	
-		menu.soltou=true;
+		menu.setMouse(e.getX(),e.getY());
+		menu.soltar();
 	}
 
 	@Override
 	public void mouseDragged(MouseEvent e) {
-//  nao
 		
 	}
-
-	
 }

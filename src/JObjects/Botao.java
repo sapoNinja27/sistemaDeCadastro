@@ -1,10 +1,25 @@
 package JObjects;
 
 import java.awt.AlphaComposite;
+import java.awt.Button;
+import java.awt.Canvas;
 import java.awt.Color;
+import java.awt.Cursor;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.Point;
+import java.awt.Toolkit;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
+import java.io.IOException;
+import java.time.LocalDate;
+
+import javax.imageio.ImageIO;
+import javax.swing.JFrame;
 
 import Main.Main;
 
@@ -13,8 +28,12 @@ public class Botao {
 	private Color cor;
 	private String text;
 	private boolean mouseOver,mousePressed;
+	private boolean mouseButton=false;
+	private boolean mouseFora=true;
 	private int borda;
 	private int font;
+	private boolean clicou, soltou, pressionou;
+	private int mx,my;
 	public Botao(int x, int y, int w, int h, int aw,int ah, String text, Color cor,int borda,int font) {
 		this.x=x;
 		this.y=y;
@@ -27,6 +46,10 @@ public class Botao {
 		this.borda=borda;
 		this.font=font;
 	}
+	public boolean clicou() {
+		return clicou;
+	}
+	
 	public Botao(int x, int y, int w, int h, String text, Color cor,int borda,int font) {
 		this.x=x;
 		this.y=y;
@@ -37,21 +60,41 @@ public class Botao {
 		this.borda=borda;
 		this.font=font;
 	}
+	public boolean mouseOver() {
+		return !mouseFora;
+	}
 	public void tick() {
-		if(Main.menu.clicou) {
-			if(Main.menu.mx>x && Main.menu.mx<x+w && Main.menu.my>y && Main.menu.my<y+h) {
-					mousePressed=true;
-			}	
-		}else if(Main.menu.soltou) {
-			Main.menu.soltou=false;
-			if(Main.menu.mx>x && Main.menu.mx<x+w && Main.menu.my>y && Main.menu.my<y+h) {
-					Main.menu.currentOption=0;
+		mx=Main.menu.getMouseX();
+		my=Main.menu.getMouseY();
+		if(Main.menu.pressionou()) {
+			clicou=false;
+			if(mx>x && mx<x+w && my>y && my<y+h) {
+				mousePressed=true;
+				mouseFora=false;
 			}else {
-				Main.menu.soltou=false;
-			}	
-		}else {
-			if(Main.menu.mx>x && Main.menu.mx<x+w && Main.menu.my>y && Main.menu.my<y+h) {
+				mouseOver=false;
+				mouseFora=true;
+			}
+		}else if(Main.menu.soltou()) {
+			mousePressed=false;
+			if(mx>x &&mx<x+w && my>y && my<y+h) {
+				clicou=true;
 				mouseOver=true;
+				mouseFora=false;
+			}else {
+				mouseOver=false;
+				clicou=false;
+				mouseFora=true;
+			}
+		}else {
+			mousePressed=false;
+			clicou=false;
+			if(mx>x && mx<x+w && my>y && my<y+h) {
+				mouseOver=true;
+				mouseFora=false;
+			}else {
+				mouseOver=false;
+				mouseFora=true;
 			}
 		}
 	}
@@ -80,4 +123,5 @@ public class Botao {
 		g.drawString(text,(x+w/2-text.length()*font/4), y+h/2+5);
 		
 	}
+	
 }

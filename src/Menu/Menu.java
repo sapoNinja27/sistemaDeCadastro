@@ -16,28 +16,53 @@ import JObjects.Botao;
 import Main.Main;
 
 public class Menu {
-	Menu_de_Opcoes menOp=new Menu_de_Opcoes();
-	Menu_de_Load menLo=new Menu_de_Load();
-	Menu_ingame menIn=new Menu_ingame();
-	int posx=0,posy=0;
-	public String[] MenuPrincipal = {"Vazio","Cadastro","Buscar","Sair"};
-	public int currentOption=0;
-	boolean load;
-	boolean opcoes;
-	String idioma="Portugues";
-	int volume=0;
-	public Color Standart;
-	public Color MouseOver;
-	public Color Pressed;
-	public Color beje;
-	boolean sfx;
-	boolean mus;
-	
-	public boolean clicou, soltou;
-	public int mx,my;
-	public boolean pause = false;
-	public int pontosH=0,pontosA=0;
-	
+	private Login login =new Login();
+	private Color Standart;
+	private Color MouseOver;
+	private Color Pressed;
+	private Color beje;
+	String state="Login";
+	private Botao cadastrar=new Botao(100,50, 97, 20,"Cadastrar", Color.white,2,15);
+	private Botao buscar=new Botao(220,50, 97, 20,"Buscar", Color.white,2,15);
+	private Botao sair=new Botao(550,300, 97, 20,"Sair", Color.white,2,15);
+	private int mx,my;
+	private boolean pressionou,soltou,moveu;
+	public Menu() {
+		Main.botoes.add(cadastrar);
+		Main.botoes.add(buscar);
+		Main.botoes.add(sair);
+	}
+	public void mover() {
+		moveu=true;
+		soltou=false;
+	}
+	public void soltar() {
+		pressionou=false;
+		soltou=true;
+	}
+	public void pressionar() {
+		pressionou=true;
+		moveu=false;
+	}
+	public boolean pressionou() {
+		return pressionou;
+	}
+	public boolean moveu() {
+		return moveu;
+	}
+	public boolean soltou() {
+		return soltou;
+	}
+	public void setMouse(int mx, int my) {
+		this.mx=mx;
+		this.my=my;
+	}
+	public int getMouseX() {
+		return mx;
+	}
+	public int getMouseY() {
+		return my;
+	}
 	public static void applySave(String str){
 		String[] spl=str.split("/");
 		for(int i=0; i< spl.length; i++) {
@@ -79,40 +104,11 @@ public class Menu {
 		}
 		return line;
 	}
-	public static void saveGame(String[] val1, int[] val2, int encode) {
-		BufferedWriter write =null;
-		try {
-			write=new BufferedWriter(new FileWriter("save.txt"));
-		}catch(IOException e) {
-			e.printStackTrace();
-		}
-		for(int i=0; i< val1.length;i++) {
-			String current=val1[i];
-			current+=":";
-			char[] value = Integer.toString(val2[i]).toCharArray();
-			for(int n=0; n<value.length;n++) {
-				value[n]+=encode;
-				current+=value[n];
-			}
-			try {
-				write.write(current);
-				if(i<val1.length-1) {
-					write.newLine();
-				}
-			}catch(IOException e) {
-				
-			}
-			try {
-				write.flush();
-				write.close();
-			}catch(IOException e) {
-				
-			}
-		}
-	}
 	
 	public void tick() {
-		
+		if(sair.clicou()) {
+			System.exit(1);
+		}
 	}
 	
 	public void render(Graphics g) {
@@ -123,12 +119,14 @@ public class Menu {
 		g.setColor(beje);
 		g.fillRect(0, 0, Main.WIDTH, Main.HEIGHT);
 		Graphics2D g2 = (Graphics2D) g;
-		Botao cadastrar=new Botao(100,50, 97, 20,"Cadastrar", Color.white,2,15);
-		Botao buscar=new Botao(220,50, 97, 20,"Buscar", Color.white,2,15);
-		Botao sair=new Botao(550,300, 97, 20,"Sair", Color.white,2,15);
-		cadastrar.render(g);
-		sair.render(g);
-		buscar.render(g);
-
+		if(state.equals("Login")) {
+			login.render(g);
+		}
+		if(state.equals("Menu")) {
+			cadastrar.render(g);
+			sair.render(g);
+			buscar.render(g);
+		}
+		
 	}
 }
