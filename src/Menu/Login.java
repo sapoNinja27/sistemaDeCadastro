@@ -34,42 +34,49 @@ public class Login {
 		Main.campos.add(senha);
 		carregarLogin();
 	}
+
 	public boolean checkLogin(String login, String senha) {
 		return true;
 	}
+
 	public void carregarLogin() {
 		File file = new File("ultimoLogin.txt");
-		if(file.exists()) {
+		if (file.exists()) {
 			try {
-				String singleLine=null;
-				BufferedReader reader=new BufferedReader(new FileReader("ultimoLogin.txt"));
+				String singleLine = null;
+				BufferedReader reader = new BufferedReader(new FileReader("ultimoLogin.txt"));
 				try {
-					while((singleLine=reader.readLine())!=null) {
-						String[] trans=singleLine.split(":");
-						char[] val=trans[1].toCharArray();
-						trans[1]="";
-						for(int i=0; i<val.length;i++) {
-							val[i]-=10;
-							trans[1]+=val[i];
+					while ((singleLine = reader.readLine()) != null) {
+						String[] trans = singleLine.split(":");
+						char[] val = trans[1].toCharArray();
+						trans[1] = "";
+						for (int i = 0; i < val.length; i++) {
+							val[i] -= 10;
+							trans[1] += val[i];
 						}
 						login.set(trans[0]);
 						senha.set(trans[1]);
 					}
-				}catch(IOException e) {
-					
+				} catch (IOException e) {
+
 				}
-			}catch(FileNotFoundException e) {
-				
+			} catch (FileNotFoundException e) {
+
 			}
 		}
 	}
+
 	public void tick() {
 		if (sair.clicou()) {
 			System.exit(1);
 		}
 		if (logar.clicou()) {
-			if(checkLogin(login.getTexto(),senha.getTexto())) {
-				Main.menu.state="Menu";
+			if (checkLogin(login.getTexto(), senha.getTexto())) {
+				Main.menu.state = "Menu";
+				Main.botoes.remove(logar);
+				Main.botoes.remove(sair);
+				Main.campos.remove(login);
+				Main.campos.remove(senha);
 			}
 			if (box.checked()) {
 				BufferedWriter write = null;
@@ -79,7 +86,7 @@ public class Login {
 					e.printStackTrace();
 				}
 				try {
-					write.write(login.getTexto()+":"+senha.getTexto());
+					write.write(login.getTexto() + ":" + senha.getTexto());
 				} catch (IOException e) {
 
 				}

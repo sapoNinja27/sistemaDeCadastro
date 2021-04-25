@@ -34,8 +34,8 @@ public class Main extends Canvas implements Runnable, MouseMotionListener, Mouse
 	private static final long serialVersionUID = 1L;
 	public static JFrame frame;
 	private Thread thread;
-	public static List <Botao> botoes= new ArrayList<Botao>();
-	public static List <CampoDeTexto> campos= new ArrayList<CampoDeTexto>();
+	public static List<Botao> botoes = new ArrayList<Botao>();
+	public static List<CampoDeTexto> campos = new ArrayList<CampoDeTexto>();
 	private boolean isRunning = true;
 	public static final int WIDTH = 180 * 4;
 	public static final int HEIGHT = 90 * 4;
@@ -60,21 +60,22 @@ public class Main extends Canvas implements Runnable, MouseMotionListener, Mouse
 		image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
 		menu = new Menu();
 	}
+
 	public void attMouse() {
-		int bot=botoes.size();
-		int camp=campos.size();
-		for(int i=0;i<botoes.size();i++) {
-			if(botoes.get(i).mouseOver()) {
+		int bot = botoes.size();
+		int camp = campos.size();
+		for (int i = 0; i < botoes.size(); i++) {
+			if (botoes.get(i).mouseOver()) {
 				bot--;
 			}
 		}
-		for(int j=0;j<campos.size();j++) {
-			if(campos.get(j).mouseOver()) {
+		for (int j = 0; j < campos.size(); j++) {
+			if (campos.get(j).mouseOver()) {
 				camp--;
 			}
 		}
-		if(bot==botoes.size()) {
-			if(camp==campos.size()) {
+		if (bot == botoes.size()) {
+			if (camp == campos.size()) {
 				try {
 					Toolkit toolkit = Toolkit.getDefaultToolkit();
 					Image image = toolkit.getImage(getClass().getResource("/cursorStandart.png"));
@@ -83,7 +84,7 @@ public class Main extends Canvas implements Runnable, MouseMotionListener, Mouse
 				} catch (Exception e) {
 
 				}
-			}else {
+			} else {
 				try {
 					Toolkit toolkit = Toolkit.getDefaultToolkit();
 					Image image = toolkit.getImage(getClass().getResource("/cursorBar.png"));
@@ -93,7 +94,7 @@ public class Main extends Canvas implements Runnable, MouseMotionListener, Mouse
 
 				}
 			}
-		}else {
+		} else {
 			try {
 				Toolkit toolkit = Toolkit.getDefaultToolkit();
 				Image image = toolkit.getImage(getClass().getResource("/cursorHand.png"));
@@ -103,9 +104,9 @@ public class Main extends Canvas implements Runnable, MouseMotionListener, Mouse
 
 			}
 		}
-		
-		
+
 	}
+
 	public void initFrame() {
 		frame = new JFrame("Gerenciador");
 		frame.add(this);
@@ -206,314 +207,314 @@ public class Main extends Canvas implements Runnable, MouseMotionListener, Mouse
 	@Override
 	public void keyPressed(KeyEvent e) {
 		if (e.getKeyCode() == KeyEvent.VK_BACK_SPACE) {
-			for(int j=0;j<campos.size();j++) {
-				if(campos.get(j).clicou()) {
+			for (int j = 0; j < campos.size(); j++) {
+				if (campos.get(j).clicou()) {
 					campos.get(j).removeLetra();
 				}
 			}
 		}
 		if (e.getKeyCode() == KeyEvent.VK_CAPS_LOCK) {
-			caps=!caps;
+			caps = !caps;
 		}
 		if (e.getKeyCode() == KeyEvent.VK_TAB) {
-			int i=99;
-			for(int j=0;j<campos.size();j++) {
-				if(campos.get(j).clicou()) {
-					i=j;
+			int i = 99;
+			for (int j = 0; j < campos.size(); j++) {
+				if (campos.get(j).clicou()) {
+					i = j;
 				}
 			}
 			System.out.println(i);
-			if(i==campos.size()-1) {
+			if (i == campos.size() - 1) {
 				campos.get(i).desclicar();
 				campos.get(0).clicar();
-				i=99;
-			}else {
+				i = 99;
+			} else {
 				campos.get(i).desclicar();
-				campos.get(i+1).clicar();
-				i=99;
+				campos.get(i + 1).clicar();
+				i = 99;
 			}
 		}
 		if (e.getKeyCode() == KeyEvent.VK_A) {
-			for(int j=0;j<campos.size();j++) {
-				if(campos.get(j).clicou()) {
-					if(caps) {
+			for (int j = 0; j < campos.size(); j++) {
+				if (campos.get(j).clicou()) {
+					if (caps) {
 						campos.get(j).addLetra("A");
-					}else {
+					} else {
 						campos.get(j).addLetra("a");
 					}
 				}
 			}
 		}
 		if (e.getKeyCode() == KeyEvent.VK_B) {
-			for(int j=0;j<campos.size();j++) {
-				if(campos.get(j).clicou()) {
-					if(caps) {
+			for (int j = 0; j < campos.size(); j++) {
+				if (campos.get(j).clicou()) {
+					if (caps) {
 						campos.get(j).addLetra("B");
-					}else {
+					} else {
 						campos.get(j).addLetra("b");
 					}
 				}
 			}
 		}
 		if (e.getKeyCode() == KeyEvent.VK_C) {
-			for(int j=0;j<campos.size();j++) {
-				if(campos.get(j).clicou()) {
-					if(caps) {
+			for (int j = 0; j < campos.size(); j++) {
+				if (campos.get(j).clicou()) {
+					if (caps) {
 						campos.get(j).addLetra("C");
-					}else {
+					} else {
 						campos.get(j).addLetra("c");
 					}
 				}
 			}
 		}
 		if (e.getKeyCode() == KeyEvent.VK_D) {
-			for(int j=0;j<campos.size();j++) {
-				if(campos.get(j).clicou()) {
-					if(caps) {
+			for (int j = 0; j < campos.size(); j++) {
+				if (campos.get(j).clicou()) {
+					if (caps) {
 						campos.get(j).addLetra("D");
-					}else {
+					} else {
 						campos.get(j).addLetra("d");
 					}
 				}
 			}
 		}
 		if (e.getKeyCode() == KeyEvent.VK_E) {
-			for(int j=0;j<campos.size();j++) {
-				if(campos.get(j).clicou()) {
-					if(caps) {
+			for (int j = 0; j < campos.size(); j++) {
+				if (campos.get(j).clicou()) {
+					if (caps) {
 						campos.get(j).addLetra("E");
-					}else {
+					} else {
 						campos.get(j).addLetra("e");
 					}
 				}
 			}
 		}
 		if (e.getKeyCode() == KeyEvent.VK_F) {
-			for(int j=0;j<campos.size();j++) {
-				if(campos.get(j).clicou()) {
-					if(caps) {
+			for (int j = 0; j < campos.size(); j++) {
+				if (campos.get(j).clicou()) {
+					if (caps) {
 						campos.get(j).addLetra("F");
-					}else {
+					} else {
 						campos.get(j).addLetra("f");
 					}
 				}
 			}
 		}
 		if (e.getKeyCode() == KeyEvent.VK_G) {
-			for(int j=0;j<campos.size();j++) {
-				if(campos.get(j).clicou()) {
-					if(caps) {
+			for (int j = 0; j < campos.size(); j++) {
+				if (campos.get(j).clicou()) {
+					if (caps) {
 						campos.get(j).addLetra("G");
-					}else {
+					} else {
 						campos.get(j).addLetra("g");
 					}
 				}
 			}
 		}
 		if (e.getKeyCode() == KeyEvent.VK_H) {
-			for(int j=0;j<campos.size();j++) {
-				if(campos.get(j).clicou()) {
-					if(caps) {
+			for (int j = 0; j < campos.size(); j++) {
+				if (campos.get(j).clicou()) {
+					if (caps) {
 						campos.get(j).addLetra("H");
-					}else {
+					} else {
 						campos.get(j).addLetra("h");
 					}
 				}
 			}
 		}
 		if (e.getKeyCode() == KeyEvent.VK_I) {
-			for(int j=0;j<campos.size();j++) {
-				if(campos.get(j).clicou()) {
-					if(caps) {
+			for (int j = 0; j < campos.size(); j++) {
+				if (campos.get(j).clicou()) {
+					if (caps) {
 						campos.get(j).addLetra("I");
-					}else {
+					} else {
 						campos.get(j).addLetra("i");
 					}
 				}
 			}
 		}
 		if (e.getKeyCode() == KeyEvent.VK_J) {
-			for(int j=0;j<campos.size();j++) {
-				if(campos.get(j).clicou()) {
-					if(caps) {
+			for (int j = 0; j < campos.size(); j++) {
+				if (campos.get(j).clicou()) {
+					if (caps) {
 						campos.get(j).addLetra("J");
-					}else {
+					} else {
 						campos.get(j).addLetra("j");
 					}
 				}
 			}
 		}
 		if (e.getKeyCode() == KeyEvent.VK_K) {
-			for(int j=0;j<campos.size();j++) {
-				if(campos.get(j).clicou()) {
-					if(caps) {
+			for (int j = 0; j < campos.size(); j++) {
+				if (campos.get(j).clicou()) {
+					if (caps) {
 						campos.get(j).addLetra("K");
-					}else {
+					} else {
 						campos.get(j).addLetra("k");
 					}
 				}
 			}
 		}
 		if (e.getKeyCode() == KeyEvent.VK_L) {
-			for(int j=0;j<campos.size();j++) {
-				if(campos.get(j).clicou()) {
-					if(caps) {
+			for (int j = 0; j < campos.size(); j++) {
+				if (campos.get(j).clicou()) {
+					if (caps) {
 						campos.get(j).addLetra("L");
-					}else {
+					} else {
 						campos.get(j).addLetra("l");
 					}
 				}
 			}
 		}
 		if (e.getKeyCode() == KeyEvent.VK_M) {
-			for(int j=0;j<campos.size();j++) {
-				if(campos.get(j).clicou()) {
-					if(caps) {
+			for (int j = 0; j < campos.size(); j++) {
+				if (campos.get(j).clicou()) {
+					if (caps) {
 						campos.get(j).addLetra("M");
-					}else {
+					} else {
 						campos.get(j).addLetra("m");
 					}
 				}
 			}
 		}
 		if (e.getKeyCode() == KeyEvent.VK_N) {
-			for(int j=0;j<campos.size();j++) {
-				if(campos.get(j).clicou()) {
-					if(caps) {
+			for (int j = 0; j < campos.size(); j++) {
+				if (campos.get(j).clicou()) {
+					if (caps) {
 						campos.get(j).addLetra("N");
-					}else {
+					} else {
 						campos.get(j).addLetra("n");
 					}
 				}
 			}
 		}
 		if (e.getKeyCode() == KeyEvent.VK_O) {
-			for(int j=0;j<campos.size();j++) {
-				if(campos.get(j).clicou()) {
-					if(caps) {
+			for (int j = 0; j < campos.size(); j++) {
+				if (campos.get(j).clicou()) {
+					if (caps) {
 						campos.get(j).addLetra("O");
-					}else {
+					} else {
 						campos.get(j).addLetra("o");
 					}
 				}
 			}
 		}
 		if (e.getKeyCode() == KeyEvent.VK_P) {
-			for(int j=0;j<campos.size();j++) {
-				if(campos.get(j).clicou()) {
-					if(caps) {
+			for (int j = 0; j < campos.size(); j++) {
+				if (campos.get(j).clicou()) {
+					if (caps) {
 						campos.get(j).addLetra("P");
-					}else {
+					} else {
 						campos.get(j).addLetra("p");
 					}
 				}
 			}
 		}
 		if (e.getKeyCode() == KeyEvent.VK_Q) {
-			for(int j=0;j<campos.size();j++) {
-				if(campos.get(j).clicou()) {
-					if(caps) {
+			for (int j = 0; j < campos.size(); j++) {
+				if (campos.get(j).clicou()) {
+					if (caps) {
 						campos.get(j).addLetra("Q");
-					}else {
+					} else {
 						campos.get(j).addLetra("q");
 					}
 				}
 			}
 		}
 		if (e.getKeyCode() == KeyEvent.VK_R) {
-			for(int j=0;j<campos.size();j++) {
-				if(campos.get(j).clicou()) {
-					if(caps) {
+			for (int j = 0; j < campos.size(); j++) {
+				if (campos.get(j).clicou()) {
+					if (caps) {
 						campos.get(j).addLetra("R");
-					}else {
+					} else {
 						campos.get(j).addLetra("r");
 					}
 				}
 			}
 		}
 		if (e.getKeyCode() == KeyEvent.VK_S) {
-			for(int j=0;j<campos.size();j++) {
-				if(campos.get(j).clicou()) {
-					if(caps) {
+			for (int j = 0; j < campos.size(); j++) {
+				if (campos.get(j).clicou()) {
+					if (caps) {
 						campos.get(j).addLetra("S");
-					}else {
+					} else {
 						campos.get(j).addLetra("s");
 					}
 				}
 			}
 		}
 		if (e.getKeyCode() == KeyEvent.VK_T) {
-			for(int j=0;j<campos.size();j++) {
-				if(campos.get(j).clicou()) {
-					if(caps) {
+			for (int j = 0; j < campos.size(); j++) {
+				if (campos.get(j).clicou()) {
+					if (caps) {
 						campos.get(j).addLetra("T");
-					}else {
+					} else {
 						campos.get(j).addLetra("t");
 					}
 				}
 			}
 		}
 		if (e.getKeyCode() == KeyEvent.VK_U) {
-			for(int j=0;j<campos.size();j++) {
-				if(campos.get(j).clicou()) {
-					if(caps) {
+			for (int j = 0; j < campos.size(); j++) {
+				if (campos.get(j).clicou()) {
+					if (caps) {
 						campos.get(j).addLetra("U");
-					}else {
+					} else {
 						campos.get(j).addLetra("u");
 					}
 				}
 			}
 		}
 		if (e.getKeyCode() == KeyEvent.VK_V) {
-			for(int j=0;j<campos.size();j++) {
-				if(campos.get(j).clicou()) {
-					if(caps) {
+			for (int j = 0; j < campos.size(); j++) {
+				if (campos.get(j).clicou()) {
+					if (caps) {
 						campos.get(j).addLetra("V");
-					}else {
+					} else {
 						campos.get(j).addLetra("v");
 					}
 				}
 			}
 		}
 		if (e.getKeyCode() == KeyEvent.VK_X) {
-			for(int j=0;j<campos.size();j++) {
-				if(campos.get(j).clicou()) {
-					if(caps) {
+			for (int j = 0; j < campos.size(); j++) {
+				if (campos.get(j).clicou()) {
+					if (caps) {
 						campos.get(j).addLetra("X");
-					}else {
+					} else {
 						campos.get(j).addLetra("x");
 					}
 				}
 			}
 		}
 		if (e.getKeyCode() == KeyEvent.VK_Y) {
-			for(int j=0;j<campos.size();j++) {
-				if(campos.get(j).clicou()) {
-					if(caps) {
+			for (int j = 0; j < campos.size(); j++) {
+				if (campos.get(j).clicou()) {
+					if (caps) {
 						campos.get(j).addLetra("Y");
-					}else {
+					} else {
 						campos.get(j).addLetra("y");
 					}
 				}
 			}
 		}
 		if (e.getKeyCode() == KeyEvent.VK_W) {
-			for(int j=0;j<campos.size();j++) {
-				if(campos.get(j).clicou()) {
-					if(caps) {
+			for (int j = 0; j < campos.size(); j++) {
+				if (campos.get(j).clicou()) {
+					if (caps) {
 						campos.get(j).addLetra("W");
-					}else {
+					} else {
 						campos.get(j).addLetra("w");
 					}
 				}
 			}
 		}
 		if (e.getKeyCode() == KeyEvent.VK_Z) {
-			for(int j=0;j<campos.size();j++) {
-				if(campos.get(j).clicou()) {
-					if(caps) {
+			for (int j = 0; j < campos.size(); j++) {
+				if (campos.get(j).clicou()) {
+					if (caps) {
 						campos.get(j).addLetra("Z");
-					}else {
+					} else {
 						campos.get(j).addLetra("z");
 					}
 				}
@@ -530,21 +531,24 @@ public class Main extends Canvas implements Runnable, MouseMotionListener, Mouse
 	public void keyTyped(KeyEvent e) {
 
 	}
-	
-	
-	
-	@Override
-	public void mouseClicked(MouseEvent e) {}
 
 	@Override
-	public void mouseEntered(MouseEvent e) {}
+	public void mouseClicked(MouseEvent e) {
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent e) {
+	}
+
 	@Override
 	public void mouseMoved(MouseEvent e) {
-		menu.setMouse(e.getX(),e.getY());
+		menu.setMouse(e.getX(), e.getY());
 		menu.mover();
 	}
+
 	@Override
-	public void mouseExited(MouseEvent e) {}
+	public void mouseExited(MouseEvent e) {
+	}
 
 	@Override
 	public void mousePressed(MouseEvent e) {
@@ -553,12 +557,12 @@ public class Main extends Canvas implements Runnable, MouseMotionListener, Mouse
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
-		menu.setMouse(e.getX(),e.getY());
+		menu.setMouse(e.getX(), e.getY());
 		menu.soltar();
 	}
 
 	@Override
 	public void mouseDragged(MouseEvent e) {
-		
+
 	}
 }

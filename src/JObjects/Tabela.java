@@ -11,7 +11,7 @@ import java.awt.event.KeyListener;
 
 import Main.Main;
 
-public class CampoDeTexto {
+public class Tabela {
 	private int x, y, w, h;
 	private String text;
 	private boolean template = true;
@@ -21,44 +21,39 @@ public class CampoDeTexto {
 	private int frames = 0, frames2 = 0;
 	private int mx, my;
 	private boolean senha;
-	private boolean box;
-	private String[] textBox;
 	private int maxSize = 10;
 
-	public CampoDeTexto(int x, int y, int w, int h, String text) {
+	public Tabela(int x, int y, int w, int h, String text) {
 		this.x = x;
 		this.y = y;
 		this.w = w;
 		this.h = h;
 		this.text = text;
 	}
-
 	public void set(String text) {
-		template = false;
+		template=false;
 		if (senha) {
-			for (int i = text.length(); i > 0; i--) {
+			for(int i=text.length();i>0;i--) {
 				textoSenha += "*";
 			}
 		}
 		newText = text;
-
+		
 	}
-
 	public String getTexto() {
-		String newText1 = "";
-		if (senha) {
-			char[] trans = newText.toCharArray();
-			for (int i = 0; i < trans.length; i++) {
-				trans[i] = (char) (trans[i] + 10);
+		String newText1="";
+		if(senha) {
+			char[] trans=newText.toCharArray();
+			for(int i=0;i<trans.length;i++) {
+				trans[i]=(char) (trans[i]+10);
 			}
-			for (int i = 0; i < trans.length; i++) {
-				newText1 = newText1 + trans[i];
+			for(int i=0;i<trans.length;i++) {
+				newText1=newText1+trans[i];
 			}
 			return newText1;
 		}
 		return newText;
 	}
-
 	public void setSenha() {
 		senha = true;
 	}
@@ -88,22 +83,6 @@ public class CampoDeTexto {
 	public boolean clicou() {
 		return clicou;
 	}
-	public void setMask(String mask) {
-		
-	}
-	public void setBox(int tam) {
-		
-	}
-	public void passar() {
-		desclicar();
-		for (int i = 0; i < Main.campos.size(); i++) {
-			if (Main.campos.get(i) == this) {
-				Main.campos.get(i + 1).clicar();
-				break;
-			}
-		}
-	}
-
 	public void clicar() {
 		clicou = true;
 		template = false;
@@ -189,11 +168,7 @@ public class CampoDeTexto {
 			if (clicou) {
 				if (frames2 == 1) {
 					g.setFont(new Font("arial", Font.BOLD, 13));
-					if(senha) {
-						g.drawString("|", x + 3 + newText.length() * 8, y + 12);
-					}else {
-						g.drawString("|", x + 3 + newText.length() * 7, y + 12);
-					}
+					g.drawString("|", x + 3 + newText.length() * 7, y + 12);
 				}
 			}
 		}
